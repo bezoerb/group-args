@@ -48,7 +48,7 @@ Arguments array or already parsed arguments.
 Type: `string`<br>
 Default: `-`
 
-Delimiter between group identifier & key
+Delimiter between group identifier & key.
 
 ##### strict
 
