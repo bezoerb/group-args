@@ -153,3 +153,16 @@ test('objext identifier with alias', t => {
     t.truthy(opts.test);
     t.truthy(opts.t);
 });
+
+test('multiple calls', t => {
+    const argv = ['--group-foo', 'bar', '--module-name', 'group-args', '--test'];
+    let opts = fn({g:'group',m:'module'}, {argv: argv});
+    let opts1 = fn({g:'group'}, {argv: argv});
+    let opts2 = fn({m:'module'}, {argv: opts1});
+
+    t.is(opts.group.foo, 'bar');
+    t.is(opts.module.name, 'group-args');
+    t.is(opts.g.foo, 'bar');
+    t.is(opts.m.name, 'group-args');
+    t.is(opts,opts2);
+});
