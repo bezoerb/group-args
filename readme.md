@@ -1,4 +1,4 @@
-# group-args [![Build Status](https://travis-ci.org/bezoerb/group-args.svg?branch=master)](https://travis-ci.org/bezoerb/group-args)
+# group-args [![Build Status](https://travis-ci.org/bezoerb/group-args.svg?branch=master)](https://travis-ci.org/bezoerb/group-args) [![Coverage Status](https://coveralls.io/repos/github/bezoerb/group-args/badge.svg?branch=master)](https://coveralls.io/github/bezoerb/group-args?branch=master)
 
 > CLI helper to group commandline arguments
 
