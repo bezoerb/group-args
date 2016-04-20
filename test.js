@@ -164,5 +164,5 @@ test('multiple calls', t => {
     t.is(opts.module.name, 'group-args');
     t.is(opts.g.foo, 'bar');
     t.is(opts.m.name, 'group-args');
-    t.is(opts,opts2);
+    t.deepEqual(opts,opts2);
 });
