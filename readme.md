@@ -26,13 +26,14 @@ groupArgs('group');
 
 ## API
 
-### groupArgs(key, [options])
+### groupArgs(key, [options], [minimistOptions])
 
 #### key
 
-Type: `string`
+Type: `string|array|object`
 
-group identifier
+Group arguments by key. When passing an object it is
+Could be `'key'`, `['key1','key2']`, `{alias1: 'key1', alias2: 'key2'}`
 
 #### options
 
@@ -63,6 +64,10 @@ Type: `string`<br>
 Default: `undefined`
 
 Alias for identifier (short opt)
+
+#### minimistOptions
+
+See [`minimist`](https://github.com/substack/minimist#var-argv--parseargsargs-opts)
 
 ## License
 

@@ -3,6 +3,8 @@ var assign = require('lodash/assign');
 var reduce = require('lodash/reduce');
 var escapeRegExp = require('lodash/escapeRegExp');
 var isPlainObject = require('lodash/isPlainObject');
+var isArray = require('lodash/isArray');
+var findKey = require('lodash/findKey');
 var camelCase = require('lodash/camelCase');
 var kebabCase = require('lodash/kebabCase');
 
@@ -24,7 +26,7 @@ function groupArgv(argv, identifier, options) {
     var isBool = rootVal === true || rootVal === false;
     var regexp = new RegExp('^' + search + '(.+)$');
     var reduced = reduce(argv, function (res, val, key) {
-        var isRoot = key === identifier || key === options.alias;
+        var isRoot = key === identifier || options.alias.indexOf(key) !== -1;
         var match = !isIgnored(key, options) && key.match(regexp);
 
         // initialize object
@@ -52,27 +54,45 @@ function groupArgv(argv, identifier, options) {
         return res;
     }, {});
 
-    if (options.alias) {
-        reduced[options.alias] = reduced[identifier];
-    }
+    options.alias.forEach(function(alias) {
+        reduced[alias] = reduced[identifier];
+    });
 
     return reduced;
 }
 
-module.exports = function (identifier, options) {
+function findAlias(source, identifier) {
+    return reduce(source || {}, function(res, val, key) {
+        if (val === identifier) {
+            res.push(key);
+        }
+        return res;
+    }, []);
+}
+
+module.exports = function (identifier, options, minimistOpts) {
     options = assign({
         argv: process.argv.slice(2),
         ignore: [],
-        alias: '',
         strict: true
     }, options || {});
 
-    var alias = {};
-    if (options.alias) {
-        alias[options.alias] = identifier;
+    if (!minimistOpts) {
+        minimistOpts = {};
     }
 
-    var argv = isPlainObject(options.argv) && options.argv || minimist(options.argv, {alias: alias});
-    return groupArgv(argv, identifier, options);
+    if (isPlainObject(identifier)) {
+        minimistOpts.alias = assign(minimistOpts.alias || {}, identifier);
+    }
+
+    var argv = isPlainObject(options.argv) && options.argv || minimist(options.argv, minimistOpts);
+
+    if (isArray(identifier) || isPlainObject(identifier)) {
+        return reduce(identifier, function (res, val) {
+            return groupArgv(res, val, assign(options, {alias: findAlias(minimistOpts.alias, val)}));
+        }, argv);
+    }
+
+    return groupArgv(argv, identifier, assign(options, {alias: findAlias(minimistOpts.alias, identifier)}));
 };
 

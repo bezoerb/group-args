@@ -73,7 +73,7 @@ test('custom delimiter', t => {
 
 test('short opts (alias)', t => {
     const argv = ['-a', '-b', '--group:foo', '1', '-g', '--group:bar', '2'];
-    let opts = fn('group', {argv: argv, delimiter: ':', alias: 'g'});
+    let opts = fn('group', {argv: argv, delimiter: ':'}, {alias: {g: 'group'}});
 
     t.truthy(opts.a);
     t.truthy(opts.b);
@@ -87,7 +87,7 @@ test('short opts (alias)', t => {
 
 test('empty object', t => {
     const argv = ['-a', '-b', '--group'];
-    let opts = fn('group', {argv: argv, delimiter: ':', alias: 'g'});
+    let opts = fn('group', {argv: argv, delimiter: ':'}, {alias: {g: 'group'}});
 
     t.is(typeof opts.group, 'object');
 });
@@ -115,4 +115,41 @@ test('default value configured', t => {
     const argv = ['--group', 'bar'];
     let opts = fn('group', {argv: argv, default: 'foo'});
     t.is(opts.group.foo, 'bar');
+});
+
+test('array identifier', t => {
+    const argv = ['--group-foo', 'bar', '--module-name', 'group-args'];
+    let opts = fn(['group','module'], {argv: argv});
+    t.is(opts.group.foo, 'bar');
+    t.is(opts.module.name, 'group-args');
+});
+
+test('array identifier with alias', t => {
+    const argv = ['--group-foo', 'bar', '--module-name', 'group-args'];
+    let opts = fn(['group','module'], {argv: argv}, {alias: {g:'group', m:'module'}});
+    t.is(opts.group.foo, 'bar');
+    t.is(opts.module.name, 'group-args');
+    t.is(opts.g.foo, 'bar');
+    t.is(opts.m.name, 'group-args');
+});
+
+test('object identifier', t => {
+    const argv = ['--group-foo', 'bar', '--module-name', 'group-args'];
+    let opts = fn({g:'group',m:'module'}, {argv: argv});
+    t.is(opts.group.foo, 'bar');
+    t.is(opts.module.name, 'group-args');
+    t.is(opts.g.foo, 'bar');
+    t.is(opts.m.name, 'group-args');
+});
+
+test('objext identifier with alias', t => {
+    const argv = ['--group-foo', 'bar', '--module-name', 'group-args', '--test'];
+    let opts = fn({g:'group',m:'module'}, {argv: argv}, {alias: {x:'group', t:'test'}});
+    t.is(opts.group.foo, 'bar');
+    t.is(opts.module.name, 'group-args');
+    t.is(opts.g.foo, 'bar');
+    t.is(opts.x.foo, 'bar');
+    t.is(opts.m.name, 'group-args');
+    t.truthy(opts.test);
+    t.truthy(opts.t);
 });
