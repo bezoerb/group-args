@@ -4,7 +4,6 @@ var reduce = require('lodash/reduce');
 var escapeRegExp = require('lodash/escapeRegExp');
 var isPlainObject = require('lodash/isPlainObject');
 var isArray = require('lodash/isArray');
-var findKey = require('lodash/findKey');
 var camelCase = require('lodash/camelCase');
 var kebabCase = require('lodash/kebabCase');
 
@@ -43,7 +42,7 @@ function groupArgv(argv, identifier, options) {
 
         // sibling e.g. --group-foo
         if (match) {
-            res[identifier][camelCase(match[1])] = val;
+            res[identifier][options.camelCase && camelCase(match[1]) || match[1]] = val;
         }
 
         // rest
@@ -54,7 +53,7 @@ function groupArgv(argv, identifier, options) {
         return res;
     }, {});
 
-    options.alias.forEach(function(alias) {
+    options.alias.forEach(function (alias) {
         reduced[alias] = reduced[identifier];
     });
 
@@ -62,7 +61,7 @@ function groupArgv(argv, identifier, options) {
 }
 
 function findAlias(source, identifier) {
-    return reduce(source || {}, function(res, val, key) {
+    return reduce(source || {}, function (res, val, key) {
         if (val === identifier) {
             res.push(key);
         }
@@ -74,6 +73,7 @@ module.exports = function (identifier, options, minimistOpts) {
     options = assign({
         argv: process.argv.slice(2),
         ignore: [],
+        camelCase: true,
         strict: true
     }, options || {});
 

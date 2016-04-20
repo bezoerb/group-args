@@ -65,6 +65,13 @@ Default: `undefined`
 
 Alias for identifier (short opt)
 
+##### camelCase
+
+Type: `bool`<br>
+Default: `true`
+
+camelCase grouped arguments
+
 #### minimistOptions
 
 See [`minimist`](https://github.com/substack/minimist#var-argv--parseargsargs-opts)

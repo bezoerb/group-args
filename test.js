@@ -119,14 +119,14 @@ test('default value configured', t => {
 
 test('array identifier', t => {
     const argv = ['--group-foo', 'bar', '--module-name', 'group-args'];
-    let opts = fn(['group','module'], {argv: argv});
+    let opts = fn(['group', 'module'], {argv: argv});
     t.is(opts.group.foo, 'bar');
     t.is(opts.module.name, 'group-args');
 });
 
 test('array identifier with alias', t => {
     const argv = ['--group-foo', 'bar', '--module-name', 'group-args'];
-    let opts = fn(['group','module'], {argv: argv}, {alias: {g:'group', m:'module'}});
+    let opts = fn(['group', 'module'], {argv: argv}, {alias: {g: 'group', m: 'module'}});
     t.is(opts.group.foo, 'bar');
     t.is(opts.module.name, 'group-args');
     t.is(opts.g.foo, 'bar');
@@ -135,7 +135,7 @@ test('array identifier with alias', t => {
 
 test('object identifier', t => {
     const argv = ['--group-foo', 'bar', '--module-name', 'group-args'];
-    let opts = fn({g:'group',m:'module'}, {argv: argv});
+    let opts = fn({g: 'group', m: 'module'}, {argv: argv});
     t.is(opts.group.foo, 'bar');
     t.is(opts.module.name, 'group-args');
     t.is(opts.g.foo, 'bar');
@@ -144,7 +144,7 @@ test('object identifier', t => {
 
 test('objext identifier with alias', t => {
     const argv = ['--group-foo', 'bar', '--module-name', 'group-args', '--test'];
-    let opts = fn({g:'group',m:'module'}, {argv: argv}, {alias: {x:'group', t:'test'}});
+    let opts = fn({g: 'group', m: 'module'}, {argv: argv}, {alias: {x: 'group', t: 'test'}});
     t.is(opts.group.foo, 'bar');
     t.is(opts.module.name, 'group-args');
     t.is(opts.g.foo, 'bar');
@@ -156,13 +156,19 @@ test('objext identifier with alias', t => {
 
 test('multiple calls', t => {
     const argv = ['--group-foo', 'bar', '--module-name', 'group-args', '--test'];
-    let opts = fn({g:'group',m:'module'}, {argv: argv});
-    let opts1 = fn({g:'group'}, {argv: argv});
-    let opts2 = fn({m:'module'}, {argv: opts1});
+    let opts = fn({g: 'group', m: 'module'}, {argv: argv});
+    let opts1 = fn({g: 'group'}, {argv: argv});
+    let opts2 = fn({m: 'module'}, {argv: opts1});
 
     t.is(opts.group.foo, 'bar');
     t.is(opts.module.name, 'group-args');
     t.is(opts.g.foo, 'bar');
     t.is(opts.m.name, 'group-args');
-    t.deepEqual(opts,opts2);
+    t.deepEqual(opts, opts2);
+});
+
+test('camelize', t => {
+    const argv = ['--group-foo-bar'];
+    let opts = fn('group', {argv: argv});
+    t.truthy(opts.group.fooBar);
 });
